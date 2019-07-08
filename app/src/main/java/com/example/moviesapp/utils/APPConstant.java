@@ -1,4 +1,4 @@
 package com.example.moviesapp.utils;
 
-public class APPCOnstant {
+public class APPConstant {
 }

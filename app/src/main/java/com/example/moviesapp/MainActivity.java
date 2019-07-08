@@ -24,8 +24,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemSelected = item.getItemId();
         if(itemSelected == R.id.most_popular){
+            //todo: create a background url that calls most popular movies endpoint
             Toast.makeText(this, "Most popular movies here", Toast.LENGTH_SHORT).show();
         } else if (itemSelected == R.id.top_rated){
+            //todo: create a background url that calls highest rating movies endpoint
             Toast.makeText(this, "Highest rating movies here", Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
