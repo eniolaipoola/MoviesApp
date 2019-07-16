@@ -3,4 +3,6 @@
 
     <string name="most_popular">Most Popular</string>
     <string name="top_rated">Top Rated</string>
+
+    <string name="error_message"> No internet, please check your internet connection</string>
 </resources>

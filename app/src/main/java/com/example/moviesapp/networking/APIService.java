@@ -12,6 +12,4 @@ public interface APIService {
     Call<MoviesModel> getAllMovies(
             @Query("api_key")  String apiKey
     );
-
-
 }

@@ -1,5 +1,7 @@
 package com.example.moviesapp.models;
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -29,6 +31,7 @@ public class MoviesResult {
     @Expose
     private String plotSynopsis;
 
+    private String moviePosterUrl;
 
     public int getMovieId() {
         return movieId;
@@ -76,5 +79,14 @@ public class MoviesResult {
 
     public void setPlotSynopsis(String plotSynopsis) {
         this.plotSynopsis = plotSynopsis;
+    }
+
+    public String getMoviePosterUrl() {
+        Log.d("tag", "it got to getting the posterurl" + moviePosterUrl);
+        return moviePosterUrl;
+    }
+
+    public void setMoviePosterUrl(String moviePosterUrl) {
+        this.moviePosterUrl = moviePosterUrl;
     }
 }

@@ -1,37 +1,60 @@
 package com.example.moviesapp;
 
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.moviesapp.models.MoviesModel;
-import com.example.moviesapp.networking.APIService;
-import com.example.moviesapp.networking.RetrofitClient;
-import com.example.moviesapp.utils.APPConstant;
+import com.example.moviesapp.models.MoviesResult;
+import com.example.moviesapp.networking.MovieData;
+import com.example.moviesapp.networking.MovieDataInterface;
+import com.example.moviesapp.utils.APPUtility;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
 
-    APIService movieApiService;
-    RetrofitClient retrofitClient;
+public class MainActivity extends AppCompatActivity implements MovieDataInterface {
+    RecyclerView recyclerView;
+    APPUtility appUtility;
+    List<MoviesResult>  moviesResultList;
+    private  MoviesAdapter moviesAdapter;
+    MovieDataInterface movieDataInterface;
+    MovieData movieData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        retrofitClient = new RetrofitClient();
+        appUtility = new APPUtility();
+        movieDataInterface = this;
 
-        //todo: display a loading view while url call is being made
-        getMovies();
+        if(!appUtility.isInternetAvailable(this)){
+            Log.d("tag", "you don't have internet access");
+            String errorMessage = getResources().getString(R.string.error_message);
 
+            //load error page fragment
+
+        } else {
+
+            movieData = new MovieData(movieDataInterface);
+            movieData.getMovies();
+
+            recyclerView = findViewById(R.id.grid_recycler_view);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2,
+                    GridLayoutManager.VERTICAL, false);
+            recyclerView.setLayoutManager(gridLayoutManager);
+            recyclerView.setHasFixedSize(true);
+
+            moviesResultList = new ArrayList<>();
+            moviesAdapter = new MoviesAdapter(moviesResultList);
+            recyclerView.setAdapter(moviesAdapter);
+        }
     }
 
     @Override
@@ -53,20 +76,16 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getMovies(){
-        movieApiService = retrofitClient.getRetrofit(APPConstant.API_BASE_URL).create(APIService.class);
-        movieApiService.getAllMovies(APPConstant.API_PRIVATE_KEY).enqueue(new Callback<MoviesModel>() {
-            @Override
-            public void onResponse(@NonNull Call<MoviesModel> call, @NonNull Response<MoviesModel> response) {
-                //todo: extract result node alone without needing the model class
-                Log.d(APPConstant.DEBUG_TAG, "response body is " + response.body().getResults().size());
-                Log.d(APPConstant.DEBUG_TAG, "response body is " + response.body().getTotalPages());
-            }
+    @Override
+    public void onSuccess(List<MoviesResult> moviesResult) {
+        this.moviesResultList.addAll(moviesResult);
+        moviesAdapter.notifyDataSetChanged();
 
-            @Override
-            public void onFailure(@NonNull Call<MoviesModel> call, @NonNull Throwable t) {
-
-            }
-        });
     }
+
+    @Override
+    public void onFailedResponse(String errorMessage) {
+
+    }
+
 }
