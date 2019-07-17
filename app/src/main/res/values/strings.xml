@@ -7,4 +7,6 @@
     <string name="error_message"> No internet, please check your internet connection</string>
 
     <string name="movie_name">Movie Name</string>
+
+    <string name="title_bar">Movie Detail</string>
 </resources>

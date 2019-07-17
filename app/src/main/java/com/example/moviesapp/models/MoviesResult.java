@@ -82,7 +82,6 @@ public class MoviesResult {
     }
 
     public String getMoviePosterUrl() {
-        Log.d("tag", "it got to getting the posterurl" + moviePosterUrl);
         return moviePosterUrl;
     }
 

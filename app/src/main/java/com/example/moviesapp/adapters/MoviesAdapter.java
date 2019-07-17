@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,12 +43,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieAdapt
         final String originalTitle = movieItem.getOriginalTitle();
         final String plotSynopsis = movieItem.getPlotSynopsis();
         final int movieId = movieItem.getMovieId();
-        Log.d("tag", "releaseDate is  " + releaseDate);
-        Log.d("tag", "poster url is  " + moviePosterUrl);
-        Log.d("tag", "rating is  " + rating);
-        Log.d("tag", "original title is  " + originalTitle);
-        Log.d("tag", "plotsynopsis is is  " + plotSynopsis);
-        Log.d("tag", "movieId is  " + movieId);
 
         //build picasso here
         Picasso.get().load(moviePosterUrl).into(movieAdapterViewHolder.moviePosterImageView);

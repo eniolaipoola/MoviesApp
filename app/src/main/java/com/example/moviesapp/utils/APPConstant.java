@@ -10,7 +10,4 @@ public class APPConstant {
 
     public static final String DEBUG_TAG = "Tag";
 
-    //todo: never commit this key in the file
-    public static final String API_PRIVATE_KEY = "79018fa6dc13a9a786b5fc0ad8869bf5";
-
 }
