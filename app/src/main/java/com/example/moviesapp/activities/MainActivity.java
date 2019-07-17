@@ -1,4 +1,4 @@
-package com.example.moviesapp;
+package com.example.moviesapp.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.moviesapp.adapters.MoviesAdapter;
+import com.example.moviesapp.R;
 import com.example.moviesapp.models.MoviesResult;
 import com.example.moviesapp.networking.MovieData;
 import com.example.moviesapp.networking.MovieDataInterface;
@@ -22,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
     RecyclerView recyclerView;
     APPUtility appUtility;
     List<MoviesResult>  moviesResultList;
-    private  MoviesAdapter moviesAdapter;
+    private MoviesAdapter moviesAdapter;
     MovieDataInterface movieDataInterface;
     MovieData movieData;
 
@@ -87,5 +89,4 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
     public void onFailedResponse(String errorMessage) {
 
     }
-
 }

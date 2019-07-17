@@ -47,7 +47,6 @@ public class MovieData {
                                 String originalTitle = result.get(i).getOriginalTitle();
                                 String plotSynopsis = result.get(i).getPlotSynopsis();
 
-
                                 result.get(i).setMovieId(id);
                                 result.get(i).setOriginalTitle(originalTitle);
                                 result.get(i).setPlotSynopsis(plotSynopsis);
