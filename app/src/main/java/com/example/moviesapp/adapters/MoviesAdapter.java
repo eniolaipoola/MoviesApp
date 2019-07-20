@@ -45,7 +45,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieAdapt
         final int movieId = movieItem.getMovieId();
 
         //build picasso here
-        Picasso.get().load(moviePosterUrl).into(movieAdapterViewHolder.moviePosterImageView);
+        Picasso.get()
+                .load(moviePosterUrl)
+                .placeholder(R.drawable.defaultposter)
+                .error(R.drawable.defaultposter)
+                .into(movieAdapterViewHolder.moviePosterImageView);
+
         movieAdapterViewHolder.moviePosterImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
