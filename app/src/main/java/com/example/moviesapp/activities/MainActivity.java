@@ -1,5 +1,8 @@
 package com.example.moviesapp.activities;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -7,13 +10,15 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.moviesapp.adapters.MoviesAdapter;
 import com.example.moviesapp.R;
+import com.example.moviesapp.fragments.AppErrorViewFragment;
+import com.example.moviesapp.fragments.AppLoadingViewFragment;
 import com.example.moviesapp.models.MoviesResult;
 import com.example.moviesapp.networking.MovieData;
 import com.example.moviesapp.networking.MovieDataInterface;
+import com.example.moviesapp.utils.APPConstant;
 import com.example.moviesapp.utils.APPUtility;
 
 import java.util.ArrayList;
@@ -35,27 +40,28 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
 
         appUtility = new APPUtility();
         movieDataInterface = this;
+        moviesResultList = new ArrayList<>();
+        movieData = new MovieData(movieDataInterface);
 
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if(!appUtility.isInternetAvailable(this)){
+            //show error view
+            String errorMessage = getResources().getString(R.string.internet_error_message);
+            AppErrorViewFragment.newInstance(errorMessage).show(fragmentTransaction, AppErrorViewFragment.class.getName());
+            fragmentTransaction.show(AppLoadingViewFragment.newInstance(errorMessage));
             Log.d("tag", "you don't have internet access");
-            String errorMessage = getResources().getString(R.string.error_message);
-
-            //load error page fragment
 
         } else {
-
-            movieData = new MovieData(movieDataInterface);
             movieData.getMovies();
+            AppLoadingViewFragment.newInstance("Loading").show(fragmentTransaction,
+                    AppLoadingViewFragment.class.getName());      //show loading view
 
             recyclerView = findViewById(R.id.grid_recycler_view);
+
             GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2,
                     GridLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setHasFixedSize(true);
-
-            moviesResultList = new ArrayList<>();
-            moviesAdapter = new MoviesAdapter(moviesResultList);
-            recyclerView.setAdapter(moviesAdapter);
         }
     }
 
@@ -69,24 +75,46 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemSelected = item.getItemId();
         if(itemSelected == R.id.most_popular){
-            //todo: create a background task that calls most popular movies endpoint
-            Toast.makeText(this, "Most popular movies here", Toast.LENGTH_SHORT).show();
+            //make api call
+            movieData.getPopularMovies(APPConstant.SORT_BY_POPULAR);
+
         } else if (itemSelected == R.id.top_rated){
-            //todo: create a background task that calls highest rating movies endpoint
-            Toast.makeText(this, "Highest rating movies here", Toast.LENGTH_SHORT).show();
+            //make url call
+            movieData = new MovieData(movieDataInterface);
+            movieData.getPopularMovies(APPConstant.SORT_BY_TOP_RATED);
         }
+
         return super.onOptionsItemSelected(item);
+
     }
 
     @Override
     public void onSuccess(List<MoviesResult> moviesResult) {
+
+        moviesAdapter = new MoviesAdapter(moviesResult);
         this.moviesResultList.addAll(moviesResult);
         moviesAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(moviesAdapter);
+
+        //remove loading view on success
+        removeDialogFragment(getSupportFragmentManager(), AppLoadingViewFragment.class.getName());
 
     }
 
     @Override
     public void onFailedResponse(String errorMessage) {
+        //show error view on failure
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        AppErrorViewFragment.newInstance(errorMessage).show(fragmentTransaction, AppErrorViewFragment.class.getName());
+        fragmentTransaction.show(AppLoadingViewFragment.newInstance(errorMessage));
 
+    }
+
+    private void removeDialogFragment(FragmentManager fragmentManager, String fragmentTag) {
+        Fragment dialogFragment = fragmentManager.findFragmentByTag(fragmentTag);
+        if (dialogFragment != null) {
+            fragmentManager.beginTransaction().
+                    remove(dialogFragment).commit();
+        }
     }
 }
