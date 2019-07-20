@@ -12,4 +12,10 @@ public interface APIService {
     Call<MoviesModel> getAllMovies(
             @Query("api_key")  String apiKey
     );
+
+    @GET("discover/movie")
+    Call<MoviesModel> getPopularMovies(
+            @Query("api_key") String apiKey,
+            @Query("sort_by") String sortBy
+    );
 }
