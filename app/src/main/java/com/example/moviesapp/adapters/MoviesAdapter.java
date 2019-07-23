@@ -10,18 +10,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.moviesapp.R;
-import com.example.moviesapp.activities.DetailsActivity;
 import com.example.moviesapp.models.MoviesResult;
+import com.example.moviesapp.models.OnItemClickedListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieAdapterViewHolder> {
     private List<MoviesResult> moviesResults;
+    private OnItemClickedListener onItemClickedListener;
 
-
-    public MoviesAdapter(List<MoviesResult> moviesResults){
+    public MoviesAdapter(List<MoviesResult> moviesResults, OnItemClickedListener onItemClicked){
         this.moviesResults = moviesResults;
+        this.onItemClickedListener = onItemClicked;
     }
 
     @NonNull
@@ -36,35 +37,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieAdapt
     @Override
     public void onBindViewHolder(@NonNull MovieAdapterViewHolder movieAdapterViewHolder, int position) {
         final MoviesResult movieItem = moviesResults.get(position);
-        final String moviePosterUrl = movieItem.getMoviePosterUrl();
-
-        final String releaseDate = movieItem.getReleaseDate();
-        final double rating = movieItem.getRating();
-        final String originalTitle = movieItem.getOriginalTitle();
-        final String plotSynopsis = movieItem.getPlotSynopsis();
-        final int movieId = movieItem.getMovieId();
-
-        //build picasso here
-        Picasso.get()
-                .load(moviePosterUrl)
-                .placeholder(R.drawable.defaultposter)
-                .error(R.drawable.defaultposter)
-                .into(movieAdapterViewHolder.moviePosterImageView);
-
-        movieAdapterViewHolder.moviePosterImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                Intent intent = new Intent(context, DetailsActivity.class);
-                intent.putExtra("releaseDate", releaseDate);
-                intent.putExtra("plotSynopsis", plotSynopsis);
-                intent.putExtra("originalTitle", originalTitle);
-                intent.putExtra("rating", rating);
-                intent.putExtra("moviePosterUrl", moviePosterUrl);
-                intent.putExtra("movieId", movieId);
-                context.startActivity(intent);
-            }
-        });
+        movieAdapterViewHolder.bindResultToView(movieItem, onItemClickedListener);
     }
 
     @Override
@@ -78,10 +51,27 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieAdapt
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder{
         ImageView moviePosterImageView;
 
-        public MovieAdapterViewHolder(final View view)
+        public MovieAdapterViewHolder(final View itemView)
         {
-            super(view);
-            moviePosterImageView = view.findViewById(R.id.moviePoster);
+            super(itemView);
+            moviePosterImageView = itemView.findViewById(R.id.moviePoster);
+        }
+
+        public void bindResultToView(final MoviesResult moviesResult, final OnItemClickedListener onItemClickedListener){
+            final String moviePosterUrl = moviesResult.getMoviePosterUrl();
+            //build picasso here
+            Picasso.get()
+                    .load(moviePosterUrl)
+                    .placeholder(R.drawable.defaultposter)
+                    .error(R.drawable.defaultposter)
+                    .into(moviePosterImageView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickedListener.onItemClicked(moviesResult);
+                }
+            });
         }
     }
 }

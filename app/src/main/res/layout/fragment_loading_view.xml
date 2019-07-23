@@ -10,8 +10,8 @@
 
     <LinearLayout
         android:id="@+id/llProgressBar"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:background="@android:color/white"
         android:layout_gravity="center"
         android:orientation="vertical">
@@ -28,14 +28,14 @@
 
         <TextView
             android:id="@+id/progressTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_width="100dp"
+            android:layout_height="70dp"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:padding="8dp"
             android:text="@string/loading"
-            android:textColor="@android:color/white"
-            android:textSize="17sp" />
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
     </LinearLayout>
 
 

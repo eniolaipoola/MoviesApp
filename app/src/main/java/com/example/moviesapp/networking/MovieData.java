@@ -58,10 +58,6 @@ public class MovieData {
                     public void onResponse(@NonNull Call<MoviesModel> call, @NonNull Response<MoviesModel> response) {
                         if(response.isSuccessful()){
                             if(response.body() != null){
-                                Log.d(APPConstant.DEBUG_TAG, "response result size is " + response.body().getResults().size());
-                                Log.d(APPConstant.DEBUG_TAG, "response body is " + response.body().getTotalPages());
-                                Log.d(APPConstant.DEBUG_TAG, "response url is " + response.raw());
-
                                 List<MoviesResult> result = response.body().getResults();
                                 getMovieResponse(result);
                                 movieDataInterface.onSuccess(result);
@@ -99,6 +95,7 @@ public class MovieData {
                 String moviePosterUrl = appUtility.buildMoviePosterUrl(posterPath);
                 // set posterUrl in movie class
                 moviesResponse.get(i).setMoviePosterUrl(moviePosterUrl);
+                Log.d(APPConstant.DEBUG_TAG, "MOVIE POSTER URL" + moviePosterUrl);
             }
         }
     }

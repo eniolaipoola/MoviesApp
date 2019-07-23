@@ -1,5 +1,7 @@
 package com.example.moviesapp.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -16,6 +18,7 @@ import com.example.moviesapp.R;
 import com.example.moviesapp.fragments.AppErrorViewFragment;
 import com.example.moviesapp.fragments.AppLoadingViewFragment;
 import com.example.moviesapp.models.MoviesResult;
+import com.example.moviesapp.models.OnItemClickedListener;
 import com.example.moviesapp.networking.MovieData;
 import com.example.moviesapp.networking.MovieDataInterface;
 import com.example.moviesapp.utils.APPConstant;
@@ -25,12 +28,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements MovieDataInterface {
+public class MainActivity extends AppCompatActivity implements MovieDataInterface, OnItemClickedListener  {
     RecyclerView recyclerView;
     APPUtility appUtility;
     List<MoviesResult>  moviesResultList;
     private MoviesAdapter moviesAdapter;
     MovieDataInterface movieDataInterface;
+    FragmentTransaction fragmentTransaction;
+    FragmentManager fragmentManager;
     MovieData movieData;
 
     @Override
@@ -43,19 +48,17 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
         moviesResultList = new ArrayList<>();
         movieData = new MovieData(movieDataInterface);
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
         if(!appUtility.isInternetAvailable(this)){
             //show error view
             String errorMessage = getResources().getString(R.string.internet_error_message);
             AppErrorViewFragment.newInstance(errorMessage).show(fragmentTransaction, AppErrorViewFragment.class.getName());
             fragmentTransaction.show(AppLoadingViewFragment.newInstance(errorMessage));
-            Log.d("tag", "you don't have internet access");
 
         } else {
             movieData.getMovies();
-            AppLoadingViewFragment.newInstance("Loading").show(fragmentTransaction,
-                    AppLoadingViewFragment.class.getName());      //show loading view
-
+            showLoadingView();
             recyclerView = findViewById(R.id.grid_recycler_view);
 
             GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2,
@@ -77,11 +80,13 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
         if(itemSelected == R.id.most_popular){
             //make api call
             movieData.getPopularMovies(APPConstant.SORT_BY_POPULAR);
+            showLoadingView();
 
         } else if (itemSelected == R.id.top_rated){
             //make url call
             movieData = new MovieData(movieDataInterface);
             movieData.getPopularMovies(APPConstant.SORT_BY_TOP_RATED);
+            showLoadingView();
         }
 
         return super.onOptionsItemSelected(item);
@@ -91,30 +96,62 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
     @Override
     public void onSuccess(List<MoviesResult> moviesResult) {
 
-        moviesAdapter = new MoviesAdapter(moviesResult);
+        moviesAdapter = new MoviesAdapter(moviesResult, this);
         this.moviesResultList.addAll(moviesResult);
+        Log.d(APPConstant.DEBUG_TAG, "API CALL is successful");
+        Log.d(APPConstant.DEBUG_TAG, "movie result " + moviesResult.get(1));
         moviesAdapter.notifyDataSetChanged();
         recyclerView.setAdapter(moviesAdapter);
 
         //remove loading view on success
-        removeDialogFragment(getSupportFragmentManager(), AppLoadingViewFragment.class.getName());
+        removeDialogFragment(AppLoadingViewFragment.class.getName());
 
     }
 
     @Override
     public void onFailedResponse(String errorMessage) {
-        //show error view on failure
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        AppErrorViewFragment.newInstance(errorMessage).show(fragmentTransaction, AppErrorViewFragment.class.getName());
-        fragmentTransaction.show(AppLoadingViewFragment.newInstance(errorMessage));
-
+        removeDialogFragment(AppLoadingViewFragment.class.getName());
+        showErrorView(errorMessage);
     }
 
-    private void removeDialogFragment(FragmentManager fragmentManager, String fragmentTag) {
+    @Override
+    public void onItemClicked(MoviesResult movieResult) {
+        final String moviePosterUrl = movieResult.getMoviePosterUrl();
+        final String releaseDate = movieResult.getReleaseDate();
+        final double rating = movieResult.getRating();
+        final String originalTitle = movieResult.getOriginalTitle();
+        final String plotSynopsis = movieResult.getPlotSynopsis();
+        final int movieId = movieResult.getMovieId();
+
+        Log.d(APPConstant.DEBUG_TAG, "movieResult" + moviePosterUrl);
+
+        Context context = MainActivity.this;
+        Intent intent = new Intent(context, DetailsActivity.class);
+        intent.putExtra("releaseDate", releaseDate);
+        intent.putExtra("plotSynopsis", plotSynopsis);
+        intent.putExtra("originalTitle", originalTitle);
+        intent.putExtra("rating", rating);
+        intent.putExtra("moviePosterUrl", moviePosterUrl);
+        intent.putExtra("movieId", movieId);
+        context.startActivity(intent);
+    }
+
+    private void removeDialogFragment(String fragmentTag) {
         Fragment dialogFragment = fragmentManager.findFragmentByTag(fragmentTag);
         if (dialogFragment != null) {
             fragmentManager.beginTransaction().
                     remove(dialogFragment).commit();
         }
+    }
+
+    private void showLoadingView(){
+        AppLoadingViewFragment.newInstance("Loading").show(fragmentTransaction,
+                AppLoadingViewFragment.class.getName());
+    }
+
+    private void showErrorView(String errorMessage){
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        AppErrorViewFragment.newInstance(errorMessage).show(fragmentTransaction, AppErrorViewFragment.class.getName());
+        fragmentTransaction.show(AppLoadingViewFragment.newInstance(errorMessage));
     }
 }
