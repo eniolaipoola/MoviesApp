@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import com.example.moviesapp.adapters.MoviesAdapter;
 import com.example.moviesapp.R;
 import com.example.moviesapp.fragments.AppErrorViewFragment;
 import com.example.moviesapp.fragments.AppLoadingViewFragment;
+import com.example.moviesapp.models.MovieTrailerModel;
 import com.example.moviesapp.models.MoviesResult;
 import com.example.moviesapp.models.OnItemClickedListener;
 import com.example.moviesapp.networking.MovieData;
@@ -51,21 +53,30 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         if(!appUtility.isInternetAvailable(this)){
-            //show error view
             String errorMessage = getResources().getString(R.string.internet_error_message);
-            AppErrorViewFragment.newInstance(errorMessage).show(fragmentTransaction, AppErrorViewFragment.class.getName());
-            fragmentTransaction.show(AppLoadingViewFragment.newInstance(errorMessage));
-
+            showErrorView(errorMessage);
         } else {
             movieData.getMovies();
             showLoadingView();
             recyclerView = findViewById(R.id.grid_recycler_view);
 
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2,
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, calculateNumberOfColumns(this),
                     GridLayoutManager.VERTICAL, false);
             recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setHasFixedSize(true);
         }
+    }
+
+    public static int calculateNumberOfColumns(Context context){
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+        int scalingFactor = 200;
+        int noOfColumns = (int) (dpWidth / scalingFactor);
+        if(noOfColumns < 2){
+            noOfColumns = 2;
+        }
+        Log.d(APPConstant.DEBUG_TAG, "No of columns is: " + noOfColumns);
+        return  noOfColumns;
     }
 
     @Override
@@ -78,15 +89,10 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemSelected = item.getItemId();
         if(itemSelected == R.id.most_popular){
-            //make api call
             movieData.getPopularMovies(APPConstant.SORT_BY_POPULAR);
-            showLoadingView();
-
         } else if (itemSelected == R.id.top_rated){
-            //make url call
             movieData = new MovieData(movieDataInterface);
             movieData.getPopularMovies(APPConstant.SORT_BY_TOP_RATED);
-            showLoadingView();
         }
 
         return super.onOptionsItemSelected(item);
@@ -95,17 +101,14 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
 
     @Override
     public void onSuccess(List<MoviesResult> moviesResult) {
-
+        removeDialogFragment(AppLoadingViewFragment.class.getName());
         moviesAdapter = new MoviesAdapter(moviesResult, this);
         this.moviesResultList.addAll(moviesResult);
-        Log.d(APPConstant.DEBUG_TAG, "API CALL is successful");
         Log.d(APPConstant.DEBUG_TAG, "movie result " + moviesResult.get(1));
         moviesAdapter.notifyDataSetChanged();
-        recyclerView.setAdapter(moviesAdapter);
-
-        //remove loading view on success
-        removeDialogFragment(AppLoadingViewFragment.class.getName());
-
+        if(moviesAdapter != null){
+            recyclerView.setAdapter(moviesAdapter);
+        }
     }
 
     @Override
@@ -122,8 +125,6 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
         final String originalTitle = movieResult.getOriginalTitle();
         final String plotSynopsis = movieResult.getPlotSynopsis();
         final int movieId = movieResult.getMovieId();
-
-        Log.d(APPConstant.DEBUG_TAG, "movieResult" + moviePosterUrl);
 
         Context context = MainActivity.this;
         Intent intent = new Intent(context, DetailsActivity.class);
@@ -153,5 +154,10 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         AppErrorViewFragment.newInstance(errorMessage).show(fragmentTransaction, AppErrorViewFragment.class.getName());
         fragmentTransaction.show(AppLoadingViewFragment.newInstance(errorMessage));
+    }
+
+    @Override
+    public void onMovieTrailerSuccessful(List<MovieTrailerModel> movieTrailer) {
+
     }
 }
