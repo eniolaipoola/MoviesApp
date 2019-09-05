@@ -106,10 +106,7 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
             showLoadingView();
         } else if (itemSelected == R.id.top_rated){
             movieData.getPopularMovies(this, APPConstant.SORT_BY_TOP_RATED);
-            if(moviesAdapter == null){
-                Log.d(APPConstant.DEBUG_TAG, "movie list size at the click of top rated is " + moviesResultList.size());
-                recyclerView.setAdapter(moviesAdapter);
-            }
+            showLoadingView();
         } else if(itemSelected == R.id.starred_movies){
             appDatabase = AppDatabase.getInstance(getApplicationContext());
             starredMoviesAdapter = new StarredMoviesAdapter(appDatabase.movieDao().getAllStarredMovies());
