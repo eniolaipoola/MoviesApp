@@ -146,23 +146,8 @@ public class MovieData implements MovieDataInterface.Model {
                         String page = movieReview.getPage();
                         movieReview.setId(id);
                         movieReview.setPage(page);
-
-                        MovieReviewModel.MovieReviewResult movieReviewResults = response.body().getReviewResult();
-                        if(movieReviewResults != null){
-                            String author = movieReviewResults.getAuthor();
-                            String resultId = movieReviewResults.getId();
-                            String content = movieReviewResults.getContent();
-                            String url = movieReviewResults.getUrl();
-
-                            movieReviewResults.setAuthor(author);
-                            movieReviewResults.setContent(content);
-                            movieReviewResults.setId(resultId);
-                            movieReviewResults.setUrl(url);
-
-                            movieReviewFinishedListener.onMovieReviewSuccessful(movieReviewResults);
-                        } else {
-                            movieReviewFinishedListener.onMovieReviewFailed("No review found");
-                        }
+                        List<MovieReviewModel.MovieReviewResult> movieReviewResults = response.body().getReviewResult();
+                        movieReviewFinishedListener.onMovieReviewSuccessful(movieReviewResults);
 
                     } else {
                         movieReviewFinishedListener.onMovieReviewFailed(response.message());

@@ -24,7 +24,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
     @Override
     public MovieTrailerAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
-        View view =  layoutInflater.inflate(R.layout.movie_reviews, viewGroup, false);
+        View view =  layoutInflater.inflate(R.layout.movie_trailer, viewGroup, false);
         return new MovieTrailerAdapterViewHolder(view);
     }
 
@@ -45,7 +45,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
 
         MovieTrailerAdapterViewHolder(final View itemView) {
             super(itemView);
-            movieTrailerName = itemView.findViewById(R.id.movieReviewName);
+            movieTrailerName = itemView.findViewById(R.id.movieTrailerName);
         }
 
         private void bindResultToView(final MovieTrailerModel.TrailerResult trailerResult){

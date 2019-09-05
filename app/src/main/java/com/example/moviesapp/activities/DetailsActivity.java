@@ -9,13 +9,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.moviesapp.R;
+import com.example.moviesapp.adapters.MovieReviewAdapter;
 import com.example.moviesapp.adapters.MovieTrailerAdapter;
 import com.example.moviesapp.fragments.AppErrorViewFragment;
 import com.example.moviesapp.fragments.AppLoadingViewFragment;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DetailsActivity extends AppCompatActivity implements MovieDataInterface.Model.OnMovieReviewFinishedListener,
+public class DetailsActivity extends AppCompatActivity implements
         MovieDataInterface.Model.OnMovieTrailerFinishedListener {
 
     TextView movieTitle, movieReleaseDate, movieRating,
@@ -51,6 +52,7 @@ public class DetailsActivity extends AppCompatActivity implements MovieDataInter
     String originalTitle, releaseDate, plotSynopsis, ratingValue, moviePosterUrl;
     int movieId;
     double rating;
+    Button reviewContent;
 
     //Member variable for the database
     private AppDatabase mDatabase;
@@ -60,11 +62,18 @@ public class DetailsActivity extends AppCompatActivity implements MovieDataInter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        setTitle(R.string.detail_title_bar);
+
         mContext = this;
         retrofitClient = new RetrofitClient();
         apiService = retrofitClient.getRetrofit(APPConstant.API_BASE_URL).create(APIService.class);
         movieData = new MovieData(apiService);
         movieTrailerList = new ArrayList<>();
+
 
         recyclerView = findViewById(R.id.movieTrailerRecyclerView);
         starredMovieImageView = findViewById(R.id.starMovie);
@@ -72,16 +81,13 @@ public class DetailsActivity extends AppCompatActivity implements MovieDataInter
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-        setTitle(R.string.detail_title_bar);
+
         getMovieInformation();
 
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         //fetch movie review
         movieData.fetchMovieTrailer(this, movieId);
         showLoadingView();
-
-        //fetch movie trailer
-        movieData.fetchMovieReview(this, movieId);
 
         mDatabase = AppDatabase.getInstance(getApplicationContext());
         starredMovieImageView.setOnClickListener(new View.OnClickListener() {
@@ -93,11 +99,16 @@ public class DetailsActivity extends AppCompatActivity implements MovieDataInter
             }
         });
 
-        ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        reviewContent = findViewById(R.id.reviewContent);
+        reviewContent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, MovieReviewActivity.class);
+                intent.putExtra("movieId", movieId);
+                startActivity(intent);
 
+            }
+        });
     }
 
     public void saveStarredMovie(int movieId, String release_date, String voteAverage, String posterPath,
@@ -106,7 +117,7 @@ public class DetailsActivity extends AppCompatActivity implements MovieDataInter
         StarredMovies starredMovies = new StarredMovies(movieId, release_date, voteAverage, posterPath, originalTitle,
                 plotSynopsis, starred, createdAt, updatedAt);
         mDatabase.movieDao().saveMovie(starredMovies);
-        //finish();
+        finish();
     }
 
     @Override
@@ -130,23 +141,10 @@ public class DetailsActivity extends AppCompatActivity implements MovieDataInter
     }
 
     @Override
-    public void onMovieReviewSuccessful(MovieReviewModel.MovieReviewResult movieReviewResult) {
-        String author = movieReviewResult.getAuthor();
-        String reviewContent = movieReviewResult.getContent();
-
-    }
-
-    @Override
     public void onMovieTrailerFailed(String errorMessage) {
         hideFragmentView(AppLoadingViewFragment.class.getName());
         showErrorView(errorMessage);
     }
-
-    @Override
-    public void onMovieReviewFailed(String errorMessage) {
-        Log.d(APPConstant.DEBUG_TAG, "ERROR: " + errorMessage);
-    }
-
 
     private void showErrorView(String errorMessage){
         fragmentTransaction = getSupportFragmentManager().beginTransaction();

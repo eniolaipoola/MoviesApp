@@ -147,9 +147,10 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
         removeDialogFragment(AppLoadingViewFragment.class.getName());
         moviesAdapter = new MoviesAdapter(moviesResult, this);
         moviesResultList.clear();
+        recyclerView.setAdapter(moviesAdapter);
         this.moviesResultList.addAll(moviesResult);
         moviesAdapter.notifyDataSetChanged();
-        recyclerView.setAdapter(moviesAdapter);
+
     }
 
     @Override

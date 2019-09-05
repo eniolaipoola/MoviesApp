@@ -39,7 +39,7 @@ public interface MovieDataInterface {
         void fetchMovieTrailer(OnMovieTrailerFinishedListener movieTrailerFinishedListener, int movieId);
 
         interface OnMovieReviewFinishedListener {
-            void onMovieReviewSuccessful(MovieReviewModel.MovieReviewResult movieReviewResult);
+            void onMovieReviewSuccessful(List<MovieReviewModel.MovieReviewResult> movieReviewResult);
 
             void onMovieReviewFailed(String errorMessage);
         }

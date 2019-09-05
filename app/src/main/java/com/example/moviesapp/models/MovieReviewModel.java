@@ -17,7 +17,7 @@ public class MovieReviewModel {
 
     @SerializedName("results")
     @Expose
-    private MovieReviewResult reviewResult;
+    private List<MovieReviewResult> reviewResult;
 
     public int getId() {
         return id;
@@ -35,11 +35,11 @@ public class MovieReviewModel {
         this.page = page;
     }
 
-    public MovieReviewResult getReviewResult() {
+    public List<MovieReviewResult> getReviewResult() {
         return reviewResult;
     }
 
-    public void setReviewResult(MovieReviewResult reviewResult) {
+    public void setReviewResult(List<MovieReviewResult> reviewResult) {
         this.reviewResult = reviewResult;
     }
 
