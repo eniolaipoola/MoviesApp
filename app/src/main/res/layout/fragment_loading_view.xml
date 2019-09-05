@@ -19,8 +19,8 @@
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lottieProgressBar"
             android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:layout_marginTop="40dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="30dp"
             android:layout_gravity="center"
             app:lottie_autoPlay="true"
             app:lottie_fileName="loading.json"
@@ -28,8 +28,8 @@
 
         <TextView
             android:id="@+id/progressTextView"
-            android:layout_width="100dp"
-            android:layout_height="70dp"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:padding="8dp"

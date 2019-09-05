@@ -17,85 +17,84 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class MovieData {
+public class MovieData implements MovieDataInterface.Model {
 
     private APPUtility appUtility;
-    private MovieDataInterface movieDataInterface;
+    private APIService apiService;
     private RetrofitClient retrofitClient;
 
-    public MovieData(MovieDataInterface movieInterface){
-        appUtility = new APPUtility();
-        this.movieDataInterface = movieInterface;
+    public MovieData(APIService apiService){
+        this.appUtility = new APPUtility();
+        this.apiService = apiService;
         retrofitClient = new RetrofitClient();
     }
 
-    public void getMovies(){
-
-        final APIService movieApiService = retrofitClient.getRetrofit(APPConstant.API_BASE_URL).create(APIService.class);
-        movieApiService.getAllMovies(APPConstant.API_PRIVATE_KEY).enqueue(new Callback<MoviesModel>() {
+    @Override
+    public void getMovies(final OnMoviesFetchedListener moviesFetchedListener) {
+        apiService.getAllMovies(APPConstant.API_PRIVATE_KEY).enqueue(new Callback<MoviesModel>() {
             @Override
             public void onResponse(@NonNull Call<MoviesModel> call, @NonNull Response<MoviesModel> response) {
                 if(response.isSuccessful()){
                     if(response.body() != null){
                         List<MoviesResult> result = response.body().getResults();
                         getMovieResponse(result);
-                        movieDataInterface.onSuccess(result);
+                        moviesFetchedListener.onMoviesSuccessful(result);
                     } else {
-                        movieDataInterface.onFailedResponse(response.message());
+                        moviesFetchedListener.onMoviesFailed(response.message());
                     }
                 } else {
-                    movieDataInterface.onFailedResponse(response.message());
+                    moviesFetchedListener.onMoviesFailed(response.message());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<MoviesModel> call, @NonNull Throwable t) {
                 // return appropriate error view
-                movieDataInterface.onFailedResponse(t.getMessage());
+                moviesFetchedListener.onMoviesFailed(t.getMessage());
             }
         });
     }
 
-    public void getPopularMovies(String sortBy){
-        APIService popularMovieService = retrofitClient.getRetrofit(APPConstant.API_BASE_URL).create(APIService.class);
-        popularMovieService.getPopularMovies(APPConstant.API_PRIVATE_KEY, sortBy).enqueue(
-                new Callback<MoviesModel>() {
-                    @Override
-                    public void onResponse(@NonNull Call<MoviesModel> call, @NonNull Response<MoviesModel> response) {
-                        if(response.isSuccessful()){
-                            if(response.body() != null){
-                                List<MoviesResult> result = response.body().getResults();
-                                if(result != null){
-                                    getMovieResponse(result);
-                                    movieDataInterface.onSuccess(result);
-                                } else {
-                                    movieDataInterface.onFailedResponse("No popular movies found");
-                                }
-                            } else {
-                                movieDataInterface.onFailedResponse(response.message());
-                            }
+    @Override
+    public void getPopularMovies(final OnPopularMoviesFetchedListener popularMoviesFetchedListener, String sortOrder) {
+        apiService.getPopularMovies(APPConstant.API_PRIVATE_KEY, sortOrder).enqueue(new Callback<MoviesModel>() {
+            @Override
+            public void onResponse(@NonNull Call<MoviesModel> call, @NonNull Response<MoviesModel> response) {
+                if(response.isSuccessful()){
+                    if(response.body() != null){
+                        List<MoviesResult> result = response.body().getResults();
+                        if(result != null){
+                            getMovieResponse(result);
+                            popularMoviesFetchedListener.onPopularMoviesSuccessful(result);
                         } else {
-                            movieDataInterface.onFailedResponse(response.message());
+                            popularMoviesFetchedListener.onPopularMoviesFailed("No popular movies found");
                         }
+                    } else {
+                        popularMoviesFetchedListener.onPopularMoviesFailed(response.message());
                     }
-
-                    @Override
-                    public void onFailure(@NonNull Call<MoviesModel> call, @NonNull Throwable t) {
-                        movieDataInterface.onFailedResponse(t.getMessage());
-                    }
+                } else {
+                    popularMoviesFetchedListener.onPopularMoviesFailed(response.message());
                 }
-        );
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MoviesModel> call, @NonNull Throwable t) {
+                popularMoviesFetchedListener.onPopularMoviesFailed(t.getMessage());
+            }
+        });
+
     }
 
-
-    public void fetchMovieTrailer(final int movieId){
-        APIService movieTrailer = retrofitClient.getRetrofit(APPConstant.API_BASE_URL).create(APIService.class);
+    @Override
+    public void fetchMovieTrailer(final OnMovieTrailerFinishedListener movieTrailerFinishedListener, final int movieId) {
+        final APIService movieTrailer = retrofitClient.getRetrofit(APPConstant.API_BASE_URL).create(APIService.class);
         movieTrailer.getMovieTrailer(movieId, APPConstant.API_PRIVATE_KEY).enqueue(new Callback<MovieTrailerModel>() {
             @Override
             public void onResponse(@NonNull Call<MovieTrailerModel> call, @NonNull Response<MovieTrailerModel> response) {
                 if(response.isSuccessful()){
                     if(response.body() != null){
                         List<MovieTrailerModel.TrailerResult> movieTrailer = response.body().getResults();
+                        Log.d(APPConstant.DEBUG_TAG, "MOVIE SIZE IN DATA CLASS" + movieTrailer.size());
                         if(movieTrailer != null){
                             for(int i = 0; i < movieTrailer.size(); i++){
                                 String id = movieTrailer.get(i).getId();
@@ -114,26 +113,28 @@ public class MovieData {
                                 movieTrailer.get(i).setSize(size);
                                 movieTrailer.get(i).setType(type);
                             }
+                            movieTrailerFinishedListener.onMovieTrailerSuccessful(movieTrailer);
                         } else {
-                            movieDataInterface.onFailedResponse("No trailer was found for this movie");
+                            movieTrailerFinishedListener.onMovieTrailerFailed("No trailer was found for this movie");
                         }
                     } else {
-                        movieDataInterface.onFailedResponse(response.message());
+                        movieTrailerFinishedListener.onMovieTrailerFailed(response.message());
                     }
                 } else {
-                    movieDataInterface.onFailedResponse(response.message());
+                    movieTrailerFinishedListener.onMovieTrailerFailed(response.message());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<MovieTrailerModel> call, @NonNull Throwable t) {
-                movieDataInterface.onFailedResponse(t.getMessage());
+                movieTrailerFinishedListener.onMovieTrailerFailed(t.getMessage());
             }
         });
 
     }
 
-    public void fetchMovieReview(int movieId){
+    @Override
+    public void fetchMovieReview(final OnMovieReviewFinishedListener movieReviewFinishedListener, int movieId) {
         APIService movieReview = retrofitClient.getRetrofit(APPConstant.API_BASE_URL).create(APIService.class);
         movieReview.getMovieReview(movieId, APPConstant.API_PRIVATE_KEY).enqueue(new Callback<MovieReviewModel>() {
             @Override
@@ -146,36 +147,35 @@ public class MovieData {
                         movieReview.setId(id);
                         movieReview.setPage(page);
 
-                        List<MovieReviewModel.MovieReviewResult> movieReviewResults = response.body().getReviewResult();
+                        MovieReviewModel.MovieReviewResult movieReviewResults = response.body().getReviewResult();
                         if(movieReviewResults != null){
-                            for(int i = 0; i < movieReviewResults.size(); i++){
-                                String author = movieReviewResults.get(i).getAuthor();
-                                String resultId = movieReviewResults.get(i).getId();
-                                String content = movieReviewResults.get(i).getContent();
-                                String url = movieReviewResults.get(i).getUrl();
+                            String author = movieReviewResults.getAuthor();
+                            String resultId = movieReviewResults.getId();
+                            String content = movieReviewResults.getContent();
+                            String url = movieReviewResults.getUrl();
 
-                                movieReviewResults.get(i).setAuthor(author);
-                                movieReviewResults.get(i).setContent(content);
-                                movieReviewResults.get(i).setId(resultId);
-                                movieReviewResults.get(i).setUrl(url);
+                            movieReviewResults.setAuthor(author);
+                            movieReviewResults.setContent(content);
+                            movieReviewResults.setId(resultId);
+                            movieReviewResults.setUrl(url);
 
-                            }
+                            movieReviewFinishedListener.onMovieReviewSuccessful(movieReviewResults);
                         } else {
-                            movieDataInterface.onFailedResponse("No review found");
+                            movieReviewFinishedListener.onMovieReviewFailed("No review found");
                         }
 
                     } else {
-                        movieDataInterface.onFailedResponse(response.message());
+                        movieReviewFinishedListener.onMovieReviewFailed(response.message());
                     }
                 } else {
-                    movieDataInterface.onFailedResponse(response.message());
+                    movieReviewFinishedListener.onMovieReviewFailed(response.message());
                 }
 
             }
 
             @Override
             public void onFailure(@NonNull Call<MovieReviewModel> call, @NonNull Throwable t) {
-                movieDataInterface.onFailedResponse(t.getMessage());
+                movieReviewFinishedListener.onMovieReviewFailed(t.getMessage());
             }
         });
     }
@@ -201,7 +201,6 @@ public class MovieData {
                 String moviePosterUrl = appUtility.buildMoviePosterUrl(posterPath);
                 // set posterUrl in movie class
                 moviesResponse.get(i).setMoviePosterUrl(moviePosterUrl);
-                Log.d(APPConstant.DEBUG_TAG, "MOVIE POSTER URL" + moviePosterUrl);
             }
         }
     }

@@ -3,6 +3,7 @@ package com.example.moviesapp.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+
 public class MoviesResult {
 
     @SerializedName("id")

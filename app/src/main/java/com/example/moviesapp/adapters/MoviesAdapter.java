@@ -2,16 +2,15 @@ package com.example.moviesapp.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.moviesapp.R;
+import com.example.moviesapp.models.Database.StarredMovies;
 import com.example.moviesapp.models.MoviesResult;
 import com.example.moviesapp.models.OnItemClickedListener;
-import com.example.moviesapp.utils.APPConstant;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -40,11 +39,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieAdapt
         movieAdapterViewHolder.bindResultToView(movieItem, onItemClickedListener);
     }
 
+    public void clearMovieData(List<MoviesResult> moviesResults){
+        moviesResults.clear();
+    }
+
     @Override
     public int getItemCount() {
-        if(moviesResults == null){
-            return 0;
-        }
         return moviesResults.size();
     }
 
@@ -69,7 +69,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieAdapt
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d(APPConstant.DEBUG_TAG, "Wanna pick the movie id" + moviesResult.getMovieId());
                     onItemClickedListener.onItemClicked(moviesResult);
                 }
             });

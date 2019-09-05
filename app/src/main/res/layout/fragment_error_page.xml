@@ -9,8 +9,8 @@
 
     <LinearLayout
         android:id="@+id/llErrrorDetails"
-        android:layout_width="350dp"
-        android:layout_height="330dp"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_gravity="center"
         android:orientation="vertical">
 

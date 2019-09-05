@@ -11,4 +11,9 @@
         android:title="@string/top_rated"
         android:orderInCategory="1" />
 
+    <item
+        android:id="@+id/starred_movies"
+        android:title="@string/starred"
+        android:orderInCategory="1" />
+
 </menu>
