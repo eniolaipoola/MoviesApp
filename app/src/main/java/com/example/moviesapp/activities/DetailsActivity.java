@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.moviesapp.R;
 import com.example.moviesapp.adapters.MovieTrailerAdapter;
@@ -92,6 +93,7 @@ public class DetailsActivity extends AppCompatActivity implements
             public void onClick(View v) {
                 saveStarredMovie(movieId,releaseDate, rating, moviePosterUrl, originalTitle, plotSynopsis,
                         moviePosterUrl,1, new Date(), new Date());
+                Toast.makeText(DetailsActivity.this, "This movie is starred successfully", Toast.LENGTH_LONG).show();
             }
         });
 

@@ -15,9 +15,11 @@ import java.util.List;
 public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapter.MovieTrailerAdapterViewHolder> {
 
     private List<MovieTrailerModel.TrailerResult> movieTrailerResult;
+    String url;
 
     public MovieTrailerAdapter(List<MovieTrailerModel.TrailerResult> trailerResultList) {
         this.movieTrailerResult = trailerResultList;
+        url = "https://www.youtube.com/";
     }
 
     @NonNull
@@ -52,6 +54,12 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
 
             String name = trailerResult.getName();
             movieTrailerName.setText(name);
+            movieTrailerName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //check if youtube is installed)
+                }
+            });
         }
     }
 }
