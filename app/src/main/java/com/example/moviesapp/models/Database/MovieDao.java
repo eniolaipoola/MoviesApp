@@ -7,23 +7,29 @@ import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import com.example.moviesapp.models.MoviesResult;
+
 import java.util.List;
 
 @Dao
 public interface MovieDao {
 
-    @Query("Select * from movie order by id")
-    List<StarredMovies> fetchAllMovies();
+    @Query("Select * from movie order by movieId")
+    List<MoviesResult> fetchAllMoviesById();
+
+
+    @Query("Select * from movie")
+    List<MoviesResult> fetchAllMovies();
 
     @Query("Select * from movie where 'starred' = 'true'")
-    List<StarredMovies> getAllStarredMovies();
+    List<MoviesResult> getAllStarredMovies();
 
     @Insert
-    void saveMovie(StarredMovies starredMovies);
+    void saveMovie(MoviesResult moviesResult);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    void updateMovie(StarredMovies starredMovies);
+    void updateMovie(MoviesResult moviesResult);
 
     @Delete
-    void deleteMovie(StarredMovies starredMovies);
+    void deleteMovie(MoviesResult moviesResult);
 }

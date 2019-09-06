@@ -94,7 +94,6 @@ public class MovieData implements MovieDataInterface.Model {
                 if(response.isSuccessful()){
                     if(response.body() != null){
                         List<MovieTrailerModel.TrailerResult> movieTrailer = response.body().getResults();
-                        Log.d(APPConstant.DEBUG_TAG, "MOVIE SIZE IN DATA CLASS" + movieTrailer.size());
                         if(movieTrailer != null){
                             for(int i = 0; i < movieTrailer.size(); i++){
                                 String id = movieTrailer.get(i).getId();
@@ -169,7 +168,7 @@ public class MovieData implements MovieDataInterface.Model {
         if(!moviesResponse.isEmpty()){
             for(int i = 0; i < moviesResponse.size(); i++){
                 String posterPath = moviesResponse.get(i).getPosterPath();
-                int id = moviesResponse.get(i).getMovieId();
+                int id = moviesResponse.get(i).getId();
                 String releaseDate = moviesResponse.get(i).getReleaseDate();
                 double rating = moviesResponse.get(i).getRating();
                 String originalTitle = moviesResponse.get(i).getOriginalTitle();

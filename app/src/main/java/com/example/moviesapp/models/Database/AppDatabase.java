@@ -7,7 +7,9 @@ import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 import android.util.Log;
 
-@Database(entities = {StarredMovies.class}, version = 1, exportSchema = false)
+import com.example.moviesapp.models.MoviesResult;
+
+@Database(entities = {MoviesResult.class}, version = 1, exportSchema = false)
 @TypeConverters(DateConverter.class)
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -22,9 +24,7 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (LOCK){
                 Log.d(LOG_TAG, "CREATING new database instance");
                 mInstance = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class,
-                        AppDatabase.DATABASE_NAME)
-                        .allowMainThreadQueries()               //temporarily allow app to perform queries on the main thread
-                        .build();
+                        AppDatabase.DATABASE_NAME).build();
             }
         }
         Log.d(LOG_TAG, "Getting the database instance");

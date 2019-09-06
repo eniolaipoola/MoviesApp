@@ -16,14 +16,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.moviesapp.R;
-import com.example.moviesapp.adapters.MovieReviewAdapter;
 import com.example.moviesapp.adapters.MovieTrailerAdapter;
 import com.example.moviesapp.fragments.AppErrorViewFragment;
 import com.example.moviesapp.fragments.AppLoadingViewFragment;
 import com.example.moviesapp.models.Database.AppDatabase;
-import com.example.moviesapp.models.Database.StarredMovies;
-import com.example.moviesapp.models.MovieReviewModel;
+import com.example.moviesapp.models.Database.AppExecutor;
 import com.example.moviesapp.models.MovieTrailerModel;
+import com.example.moviesapp.models.MoviesResult;
 import com.example.moviesapp.networking.APIService;
 import com.example.moviesapp.networking.MovieData;
 import com.example.moviesapp.networking.MovieDataInterface;
@@ -81,9 +80,7 @@ public class DetailsActivity extends AppCompatActivity implements
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-
         getMovieInformation();
-
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         //fetch movie review
         movieData.fetchMovieTrailer(this, movieId);
@@ -93,9 +90,8 @@ public class DetailsActivity extends AppCompatActivity implements
         starredMovieImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveStarredMovie(movieId,releaseDate,ratingValue, moviePosterUrl, originalTitle, plotSynopsis,
-                        1, new Date(), new Date());
-
+                saveStarredMovie(movieId,releaseDate, rating, moviePosterUrl, originalTitle, plotSynopsis,
+                        moviePosterUrl,1, new Date(), new Date());
             }
         });
 
@@ -106,18 +102,21 @@ public class DetailsActivity extends AppCompatActivity implements
                 Intent intent = new Intent(mContext, MovieReviewActivity.class);
                 intent.putExtra("movieId", movieId);
                 startActivity(intent);
-
             }
         });
     }
 
-    public void saveStarredMovie(int movieId, String release_date, String voteAverage, String posterPath,
-                                 String originalTitle, String plotSynopsis, int starred, Date createdAt, Date updatedAt){
+    public void saveStarredMovie(final int movieId, String release_date, double movieRating, String posterPath,
+                                 String originalTitle, String plotSynopsis, String moviePosterUrl, int starred, Date createdAt, Date updatedAt){
 
-        StarredMovies starredMovies = new StarredMovies(movieId, release_date, voteAverage, posterPath, originalTitle,
-                plotSynopsis, starred, createdAt, updatedAt);
-        mDatabase.movieDao().saveMovie(starredMovies);
-        finish();
+        final MoviesResult moviesResult = new MoviesResult(movieId, release_date, movieRating, posterPath, originalTitle,
+                plotSynopsis, moviePosterUrl, starred, createdAt, updatedAt);
+        AppExecutor.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDatabase.movieDao().saveMovie(moviesResult);
+            }
+        });
     }
 
     @Override
