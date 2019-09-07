@@ -36,4 +36,8 @@ public class AppLoadingViewFragment extends DialogFragment {
         return rootView;
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
 }

@@ -1,5 +1,8 @@
 package com.example.moviesapp.adapters;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,11 +18,11 @@ import java.util.List;
 public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapter.MovieTrailerAdapterViewHolder> {
 
     private List<MovieTrailerModel.TrailerResult> movieTrailerResult;
-    String url;
+    Context mContext;
 
-    public MovieTrailerAdapter(List<MovieTrailerModel.TrailerResult> trailerResultList) {
+    public MovieTrailerAdapter(List<MovieTrailerModel.TrailerResult> trailerResultList, Context context) {
         this.movieTrailerResult = trailerResultList;
-        url = "https://www.youtube.com/";
+        this.mContext = context;
     }
 
     @NonNull
@@ -57,7 +60,12 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
             movieTrailerName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //check if youtube is installed)
+                    String url = "https://www.youtube.com/";
+                    Uri webPage = Uri.parse(url);
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, webPage);
+                    if(browserIntent.resolveActivity(mContext.getPackageManager()) != null){
+                        mContext.startActivity(browserIntent);
+                    }
                 }
             });
         }

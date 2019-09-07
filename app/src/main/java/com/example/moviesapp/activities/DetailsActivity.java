@@ -2,6 +2,7 @@ package com.example.moviesapp.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -73,6 +74,7 @@ public class DetailsActivity extends AppCompatActivity implements
         apiService = retrofitClient.getRetrofit(APPConstant.API_BASE_URL).create(APIService.class);
         movieData = new MovieData(apiService);
         movieTrailerList = new ArrayList<>();
+        final String url = "https://www.youtube.com/";
 
 
         recyclerView = findViewById(R.id.movieTrailerRecyclerView);
@@ -106,6 +108,21 @@ public class DetailsActivity extends AppCompatActivity implements
                 startActivity(intent);
             }
         });
+
+        recyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openWebPage(url);
+            }
+        });
+    }
+
+    private void openWebPage(String url){
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
     public void saveStarredMovie(final int movieId, String release_date, double movieRating, String posterPath,
@@ -134,7 +151,7 @@ public class DetailsActivity extends AppCompatActivity implements
     @Override
     public void onMovieTrailerSuccessful(List<MovieTrailerModel.TrailerResult> movieTrailer) {
         hideFragmentView(AppLoadingViewFragment.class.getName());
-        movieTrailerAdapter = new MovieTrailerAdapter(movieTrailer);
+        movieTrailerAdapter = new MovieTrailerAdapter(movieTrailer, this);
         movieTrailerAdapter.notifyDataSetChanged();
         this.movieTrailerList.addAll(movieTrailer);
         recyclerView.setAdapter(movieTrailerAdapter);
