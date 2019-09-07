@@ -1,9 +1,11 @@
 package com.example.moviesapp.networking;
 
+import com.example.moviesapp.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -30,8 +32,18 @@ public class RetrofitClient {
 
     private OkHttpClient okHttpClient(){
         OkHttpClient.Builder okHttpClient = new OkHttpClient.Builder();
-        return okHttpClient.build();
 
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+
+        if(BuildConfig.DEBUG){
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        } else {
+            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        }
+
+        okHttpClient.addInterceptor(loggingInterceptor);
+
+        return okHttpClient.build();
     }
 
 }
