@@ -41,4 +41,9 @@ public class AppErrorViewFragment extends DialogFragment {
 
         return rootView;
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
 }

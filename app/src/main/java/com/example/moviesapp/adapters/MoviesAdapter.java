@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.moviesapp.R;
-import com.example.moviesapp.models.Database.StarredMovies;
 import com.example.moviesapp.models.MoviesResult;
 import com.example.moviesapp.models.OnItemClickedListener;
 import com.squareup.picasso.Picasso;
@@ -37,10 +36,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieAdapt
     public void onBindViewHolder(@NonNull MovieAdapterViewHolder movieAdapterViewHolder, int position) {
         final MoviesResult movieItem = moviesResults.get(position);
         movieAdapterViewHolder.bindResultToView(movieItem, onItemClickedListener);
-    }
-
-    public void clearMovieData(List<MoviesResult> moviesResults){
-        moviesResults.clear();
     }
 
     @Override

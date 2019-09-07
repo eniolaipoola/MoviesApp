@@ -4,21 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.moviesapp.R;
 import com.example.moviesapp.adapters.MoviesAdapter;
-import com.example.moviesapp.adapters.StarredMoviesAdapter;
 import com.example.moviesapp.fragments.AppErrorViewFragment;
 import com.example.moviesapp.fragments.AppLoadingViewFragment;
 import com.example.moviesapp.models.Database.AppDatabase;
-import com.example.moviesapp.models.Database.StarredMovies;
+import com.example.moviesapp.models.Database.AppExecutor;
 import com.example.moviesapp.models.MoviesResult;
 import com.example.moviesapp.models.OnItemClickedListener;
 import com.example.moviesapp.networking.APIService;
@@ -38,9 +37,7 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
     RecyclerView recyclerView;
     APPUtility appUtility;
     List<MoviesResult>  moviesResultList;
-    List<StarredMovies> starredMoviesList;
     private MoviesAdapter moviesAdapter;
-    private StarredMoviesAdapter starredMoviesAdapter;
     MovieData movieData;
     Context mContext;
     APIService apiService;
@@ -55,7 +52,13 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
         appUtility = new APPUtility();
         mContext = MainActivity.this;
         moviesResultList = new ArrayList<>();
-        starredMoviesList = new ArrayList<>();
+        appDatabase = AppDatabase.getInstance(getApplicationContext());
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        setTitle(R.string.app_name);
 
         retrofitClient = new RetrofitClient();
         apiService = retrofitClient.getRetrofit(APPConstant.API_BASE_URL).create(APIService.class);
@@ -102,27 +105,36 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemSelected = item.getItemId();
         if(itemSelected == R.id.most_popular){
+            setTitle(R.string.most_popular);
             movieData.getPopularMovies(this, APPConstant.SORT_BY_POPULAR);
             showLoadingView();
         } else if (itemSelected == R.id.top_rated){
+            setTitle(R.string.top_rated);
             movieData.getPopularMovies(this, APPConstant.SORT_BY_TOP_RATED);
             showLoadingView();
         } else if(itemSelected == R.id.starred_movies){
-            appDatabase = AppDatabase.getInstance(getApplicationContext());
-            starredMoviesAdapter = new StarredMoviesAdapter(appDatabase.movieDao().getAllStarredMovies());
-            this.starredMoviesList.addAll(appDatabase.movieDao().fetchAllMovies());
-            starredMoviesAdapter.notifyDataSetChanged();
-
-            if(moviesAdapter != null){
-                moviesAdapter.clearMovieData(moviesResultList);
-                recyclerView.setAdapter(starredMoviesAdapter);
-                Log.d(APPConstant.DEBUG_TAG, "movie list size at this point it " + moviesResultList.size());
-                Log.d(APPConstant.DEBUG_TAG, "starred movie list size at this point it " + starredMoviesList.size());
-
-            }
+            setTitle(R.string.starred);
+            AppExecutor.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    moviesResultList = appDatabase.movieDao().fetchAllMovies();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setStarredMovies(moviesResultList);
+                        }
+                    });
+                }
+            });
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setStarredMovies(List<MoviesResult> movies){
+        moviesAdapter = new MoviesAdapter(movies, this);
+        moviesAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(moviesAdapter);
     }
 
     @Override
@@ -150,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
         recyclerView.setAdapter(moviesAdapter);
         this.moviesResultList.addAll(moviesResult);
         moviesAdapter.notifyDataSetChanged();
-
     }
 
     @Override
@@ -165,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
         final double rating = movieResult.getRating();
         final String originalTitle = movieResult.getOriginalTitle();
         final String plotSynopsis = movieResult.getPlotSynopsis();
-        final int movieId = movieResult.getMovieId();
+        final int movieId = movieResult.getId();
 
         Intent intent = new Intent(mContext, DetailsActivity.class);
         intent.putExtra("releaseDate", releaseDate);

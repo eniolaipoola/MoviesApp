@@ -2,6 +2,7 @@ package com.example.moviesapp.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,16 +15,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.moviesapp.R;
-import com.example.moviesapp.adapters.MovieReviewAdapter;
 import com.example.moviesapp.adapters.MovieTrailerAdapter;
 import com.example.moviesapp.fragments.AppErrorViewFragment;
 import com.example.moviesapp.fragments.AppLoadingViewFragment;
 import com.example.moviesapp.models.Database.AppDatabase;
-import com.example.moviesapp.models.Database.StarredMovies;
-import com.example.moviesapp.models.MovieReviewModel;
+import com.example.moviesapp.models.Database.AppExecutor;
 import com.example.moviesapp.models.MovieTrailerModel;
+import com.example.moviesapp.models.MoviesResult;
 import com.example.moviesapp.networking.APIService;
 import com.example.moviesapp.networking.MovieData;
 import com.example.moviesapp.networking.MovieDataInterface;
@@ -73,6 +74,7 @@ public class DetailsActivity extends AppCompatActivity implements
         apiService = retrofitClient.getRetrofit(APPConstant.API_BASE_URL).create(APIService.class);
         movieData = new MovieData(apiService);
         movieTrailerList = new ArrayList<>();
+        final String url = "https://www.youtube.com/";
 
 
         recyclerView = findViewById(R.id.movieTrailerRecyclerView);
@@ -81,9 +83,7 @@ public class DetailsActivity extends AppCompatActivity implements
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-
         getMovieInformation();
-
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         //fetch movie review
         movieData.fetchMovieTrailer(this, movieId);
@@ -93,9 +93,9 @@ public class DetailsActivity extends AppCompatActivity implements
         starredMovieImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveStarredMovie(movieId,releaseDate,ratingValue, moviePosterUrl, originalTitle, plotSynopsis,
-                        1, new Date(), new Date());
-
+                saveStarredMovie(movieId,releaseDate, rating, moviePosterUrl, originalTitle, plotSynopsis,
+                        moviePosterUrl,1, new Date(), new Date());
+                Toast.makeText(DetailsActivity.this, "This movie is starred successfully", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -106,18 +106,36 @@ public class DetailsActivity extends AppCompatActivity implements
                 Intent intent = new Intent(mContext, MovieReviewActivity.class);
                 intent.putExtra("movieId", movieId);
                 startActivity(intent);
+            }
+        });
 
+        recyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openWebPage(url);
             }
         });
     }
 
-    public void saveStarredMovie(int movieId, String release_date, String voteAverage, String posterPath,
-                                 String originalTitle, String plotSynopsis, int starred, Date createdAt, Date updatedAt){
+    private void openWebPage(String url){
+        Uri webpage = Uri.parse(url);
+        Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
 
-        StarredMovies starredMovies = new StarredMovies(movieId, release_date, voteAverage, posterPath, originalTitle,
-                plotSynopsis, starred, createdAt, updatedAt);
-        mDatabase.movieDao().saveMovie(starredMovies);
-        finish();
+    public void saveStarredMovie(final int movieId, String release_date, double movieRating, String posterPath,
+                                 String originalTitle, String plotSynopsis, String moviePosterUrl, int starred, Date createdAt, Date updatedAt){
+
+        final MoviesResult moviesResult = new MoviesResult(movieId, release_date, movieRating, posterPath, originalTitle,
+                plotSynopsis, moviePosterUrl, starred, createdAt, updatedAt);
+        AppExecutor.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDatabase.movieDao().saveMovie(moviesResult);
+            }
+        });
     }
 
     @Override
@@ -133,7 +151,7 @@ public class DetailsActivity extends AppCompatActivity implements
     @Override
     public void onMovieTrailerSuccessful(List<MovieTrailerModel.TrailerResult> movieTrailer) {
         hideFragmentView(AppLoadingViewFragment.class.getName());
-        movieTrailerAdapter = new MovieTrailerAdapter(movieTrailer);
+        movieTrailerAdapter = new MovieTrailerAdapter(movieTrailer, this);
         movieTrailerAdapter.notifyDataSetChanged();
         this.movieTrailerList.addAll(movieTrailer);
         recyclerView.setAdapter(movieTrailerAdapter);

@@ -94,7 +94,6 @@ public class MovieReviewActivity extends AppCompatActivity implements MovieDataI
     @Override
     public void onMovieReviewFailed(String errorMessage) {
         showErrorView(errorMessage);
-        Log.d(APPConstant.DEBUG_TAG, "ERROR: " + errorMessage);
     }
 
     private void showErrorView(String errorMessage){
@@ -116,5 +115,4 @@ public class MovieReviewActivity extends AppCompatActivity implements MovieDataI
                     remove(dialogFragment).commit();
         }
     }
-
 }
