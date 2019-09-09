@@ -16,6 +16,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -32,8 +37,17 @@ dependencies {
     implementation 'com.airbnb.android:lottie:2.7.0'
     implementation 'com.karumi:dexter:5.0.0'
 
+    //#################### Room Database Dependency######################//
     implementation "android.arch.persistence.room:runtime:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+
+    //########################### LiveData and ViewModel##############################//
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    annotationProcessor "android.arch.lifecycle:common-java8:1.1.1"
+
+    //###################### ButterKnife #########################
+    implementation "com.jakewharton:butterknife:8.4.0"
+    annotationProcessor "com.jakewharton:butterknife-compiler:8.4.0"
 
     //###################################### Networking #######################################//
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
