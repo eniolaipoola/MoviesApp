@@ -8,10 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -123,7 +121,6 @@ public class DetailsActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, MovieReviewActivity.class);
-                Log.d(APPConstant.DEBUG_TAG, "movieId in trailer is " + movieId);
                 intent.putExtra("movieId", movieId);
                 startActivity(intent);
             }
@@ -209,7 +206,7 @@ public class DetailsActivity extends AppCompatActivity implements
 
             releaseDate = moviesResult.getReleaseDate();
             plotSynopsis = moviesResult.getPlotSynopsis();
-            movieId = moviesResult.getMovieId();
+            movieId = moviesResult.getId();
             originalTitle = moviesResult.getOriginalTitle();
             moviePosterUrl = moviesResult.getMoviePosterUrl();
             movieReleaseDate.setText(releaseDate);

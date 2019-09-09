@@ -1,4 +1,4 @@
-package com.ehnyn.moviesapp;
+package com.ehnyn.moviesapp.models;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.ehnyn.moviesapp.models.Database.AppDatabase;
-import com.ehnyn.moviesapp.models.MoviesResult;
 import com.ehnyn.moviesapp.utils.APPConstant;
 
 import java.util.List;

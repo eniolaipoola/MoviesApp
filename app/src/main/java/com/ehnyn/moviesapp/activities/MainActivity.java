@@ -15,7 +15,7 @@ import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.ehnyn.moviesapp.MainViewModel;
+import com.ehnyn.moviesapp.models.MainViewModel;
 import com.ehnyn.moviesapp.R;
 import com.ehnyn.moviesapp.adapters.MoviesAdapter;
 import com.ehnyn.moviesapp.fragments.AppErrorViewFragment;
@@ -174,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
     public void onItemClicked(MoviesResult movieResult) {
         Intent intent = new Intent(mContext, DetailsActivity.class);
         intent.putExtra("MOVIE", movieResult);
+        intent.putExtra("movieId", movieResult.getId());
         mContext.startActivity(intent);
     }
 
