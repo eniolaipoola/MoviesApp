@@ -22,9 +22,6 @@ sorting by starred via settings.
 
 ![](https://user-images.githubusercontent.com/19291341/64474136-4ec75100-d168-11e9-862d-75676f678453.jpg)
 
-Details Page
-![](https://user-images.githubusercontent.com/19291341/64474137-4ec75100-d168-11e9-8c50-3a2c1c7e2787.jpg)
-
 
 The starredMovies are received from an API http://api.themoviedb.org/3/. To use this API, you need to sign up with
 themoviesdb and generate an API_KEY which would be used for all api calls made in the application.
