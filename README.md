@@ -1,7 +1,7 @@
-#Popular Movies App
+# Popular Movies App
 This is a project from Udacity Android Developer Nanodegree Program
 
-###Project Summary
+### Project Summary
 Most of us can relate to kicking back on the couch and enjoying a movie with friends and family.
 This project is an app that allow users to discover the most popular starredMovies playing. The
 app upon launch, presents the user with a grid arrangement of movie posters. It allows the user
@@ -11,12 +11,12 @@ It also allows the user to tap on a movie poster and transition to a details scr
 original title, movie poster image thumbnail, A plot synopsis (called overview in the api), user rating
 (called vote_average in the api) and release date. On the Details page, the user can star a movie as a favourite.
 
-###Features
+### Features
 - The application ensures all movies are displayed in a user friendly interface. It uses a variety of layout to
 such as LinearLayout, ScrollView, RecyclerView, and ConstraintsLayout.
 - All API calls are made using Retrofit
 
-###Third Party API
+### Third Party API
 The app fetches it's data from an API http://api.themoviedb.org/3/. To use this API, you need to sign up with
 themoviesdb and generate an API_KEY which would be used for all api calls made in the application.
 
@@ -24,7 +24,7 @@ To ensure proper functioning of this app, generate the API key and place it in t
 API_PRIVATE_KEY variable.
 
 
-###Images
+### Images
 ![](https://user-images.githubusercontent.com/19291341/64474136-4ec75100-d168-11e9-862d-75676f678453.jpg)
 
 ![moviesapp](https://user-images.githubusercontent.com/19291341/65424072-87228c80-de02-11e9-91f4-2002b1210e06.png)
