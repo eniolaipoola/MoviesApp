@@ -1,7 +1,6 @@
 package com.ehnyn.moviesapp.models.Database;
 
-import android.arch.persistence.room.TypeConverter;
-
+import androidx.room.TypeConverter;
 import java.util.Date;
 
 /*To illustrate type converter in room*/

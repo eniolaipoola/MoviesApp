@@ -4,18 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.core.app.Fragment;
-import androidx.core.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.ehnyn.moviesapp.R;
 import com.ehnyn.moviesapp.adapters.MovieTrailerAdapter;
 import com.ehnyn.moviesapp.fragments.AppErrorViewFragment;
@@ -116,21 +116,13 @@ public class DetailsActivity extends AppCompatActivity implements
             }
         });
 
-        reviewContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, MovieReviewActivity.class);
-                intent.putExtra("movieId", movieId);
-                startActivity(intent);
-            }
+        reviewContent.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, MovieReviewActivity.class);
+            intent.putExtra("movieId", movieId);
+            startActivity(intent);
         });
 
-        recyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openWebPage(url);
-            }
-        });
+        recyclerView.setOnClickListener(v -> openWebPage(url));
     }
 
     private void openWebPage(String url) {
@@ -146,12 +138,7 @@ public class DetailsActivity extends AppCompatActivity implements
 
         final MoviesResult moviesResult = new MoviesResult(movieId, release_date, movieRating, posterPath, originalTitle,
                 plotSynopsis, moviePosterUrl, starred, createdAt, updatedAt);
-        AppExecutor.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDatabase.movieDao().saveMovie(moviesResult);
-            }
-        });
+        AppExecutor.getInstance().diskIO().execute(() -> mDatabase.movieDao().saveMovie(moviesResult));
     }
 
     @Override

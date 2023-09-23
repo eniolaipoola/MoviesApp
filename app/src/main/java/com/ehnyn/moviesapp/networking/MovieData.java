@@ -1,6 +1,6 @@
 package com.ehnyn.moviesapp.networking;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.ehnyn.moviesapp.models.MovieReviewModel;
 import com.ehnyn.moviesapp.models.MovieTrailerModel;
@@ -8,9 +8,7 @@ import com.ehnyn.moviesapp.models.MoviesModel;
 import com.ehnyn.moviesapp.models.MoviesResult;
 import com.ehnyn.moviesapp.utils.APPConstant;
 import com.ehnyn.moviesapp.utils.APPUtility;
-
 import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
