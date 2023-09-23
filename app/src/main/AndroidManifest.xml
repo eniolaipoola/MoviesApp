@@ -14,7 +14,8 @@
         android:theme="@style/AppTheme">
         <activity android:name="com.ehnyn.moviesapp.activities.MovieReviewActivity"/>
         <activity android:name="com.ehnyn.moviesapp.activities.DetailsActivity" />
-        <activity android:name="com.ehnyn.moviesapp.activities.MainActivity">
+        <activity android:name="com.ehnyn.moviesapp.activities.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
