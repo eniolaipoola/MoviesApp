@@ -10,7 +10,7 @@ public class APPConstant {
 
     public static final String DEBUG_TAG = "Tag";
 
-    public static final String API_PRIVATE_KEY = "";
+    public static final String API_PRIVATE_KEY = "79018fa6dc13a9a786b5fc0ad8869bf5";
 
     public static final String SORT_BY_POPULAR = "popularity.desc";
 

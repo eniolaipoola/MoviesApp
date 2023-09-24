@@ -2,14 +2,13 @@ package com.ehnyn.moviesapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.ehnyn.moviesapp.R;
 import com.ehnyn.moviesapp.adapters.MovieReviewAdapter;
 import com.ehnyn.moviesapp.fragments.AppErrorViewFragment;
@@ -20,10 +19,8 @@ import com.ehnyn.moviesapp.networking.MovieData;
 import com.ehnyn.moviesapp.networking.MovieDataInterface;
 import com.ehnyn.moviesapp.networking.RetrofitClient;
 import com.ehnyn.moviesapp.utils.APPConstant;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -35,7 +32,8 @@ public class MovieReviewActivity extends AppCompatActivity implements MovieDataI
     MovieReviewAdapter movieReviewAdapter;
     List<MovieReviewModel.MovieReviewResult> movieReviewResults;
     FragmentTransaction fragmentTransaction;
-    @BindView(R.id.movieReviewRecyclerView) RecyclerView recyclerView;
+    @BindView(R.id.movieReviewRecyclerView)
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +82,7 @@ public class MovieReviewActivity extends AppCompatActivity implements MovieDataI
     public void onMovieReviewSuccessful(List<MovieReviewModel.MovieReviewResult> movieReviewResult) {
         hideFragmentView(AppLoadingViewFragment.class.getName());
         movieReviewAdapter = new MovieReviewAdapter(movieReviewResult);
-        if(movieReviewResult.size() == 0){
-
-        }
+        if(movieReviewResult.size() == 0){}
         movieReviewAdapter.notifyDataSetChanged();
         this.movieReviewResults.addAll(movieReviewResult);
         recyclerView.setAdapter(movieReviewAdapter);
