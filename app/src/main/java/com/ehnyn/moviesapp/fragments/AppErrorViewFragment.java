@@ -1,12 +1,11 @@
 package com.ehnyn.moviesapp.fragments;
 
 import android.os.Bundle;
-import androidx.core.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
+import androidx.fragment.app.DialogFragment;
 import com.ehnyn.moviesapp.R;
 
 public class AppErrorViewFragment extends DialogFragment {
@@ -32,12 +31,7 @@ public class AppErrorViewFragment extends DialogFragment {
         messageTextView.setText(message);
 
         TextView retryTextView = rootView.findViewById(R.id.retryText);
-        retryTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        retryTextView.setOnClickListener(v -> dismiss());
 
         return rootView;
     }

@@ -47,8 +47,8 @@ dependencies {
     annotationProcessor 'androidx.lifecycle:lifecycle-common-java8:2.6.2'
 
     //###################### ButterKnife #########################
-    implementation "com.jakewharton:butterknife:8.4.0"
-    annotationProcessor "com.jakewharton:butterknife-compiler:8.4.0"
+    implementation "com.jakewharton:butterknife:10.2.0"
+    annotationProcessor "com.jakewharton:butterknife-compiler:10.2.0"
 
     //###################################### Networking #######################################//
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
