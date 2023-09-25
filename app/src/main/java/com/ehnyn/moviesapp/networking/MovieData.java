@@ -1,7 +1,6 @@
 package com.ehnyn.moviesapp.networking;
 
 import androidx.annotation.NonNull;
-
 import com.ehnyn.moviesapp.models.MovieReviewModel;
 import com.ehnyn.moviesapp.models.MovieTrailerModel;
 import com.ehnyn.moviesapp.models.MoviesModel;
