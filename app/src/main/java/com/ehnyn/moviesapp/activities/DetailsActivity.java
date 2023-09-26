@@ -4,19 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.ehnyn.moviesapp.R;
 import com.ehnyn.moviesapp.adapters.MovieTrailerAdapter;
 import com.ehnyn.moviesapp.fragments.AppErrorViewFragment;
@@ -31,11 +29,9 @@ import com.ehnyn.moviesapp.networking.MovieDataInterface;
 import com.ehnyn.moviesapp.networking.RetrofitClient;
 import com.ehnyn.moviesapp.utils.APPConstant;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -59,8 +55,6 @@ public class DetailsActivity extends AppCompatActivity implements
     TextView movieReleaseDate;
     @BindView(R.id.originalTitle)
     TextView movieOriginalTitle;
-    @BindView(R.id.movieThumbnail)
-    TextView movieTitle;
     @BindView(R.id.rating)
     TextView movieRating;
     @BindView(R.id.plotSynopsis)
@@ -108,30 +102,19 @@ public class DetailsActivity extends AppCompatActivity implements
         showLoadingView();
 
         mDatabase = AppDatabase.getInstance(getApplicationContext());
-        starredMovieImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveStarredMovie(movieId, releaseDate, rating, moviePosterUrl, originalTitle, plotSynopsis,
-                        moviePosterUrl, 1, new Date(), new Date());
-                Toast.makeText(DetailsActivity.this, "This movie is starred successfully", Toast.LENGTH_LONG).show();
-            }
+        starredMovieImageView.setOnClickListener(v -> {
+            saveStarredMovie(movieId, releaseDate, rating, moviePosterUrl, originalTitle, plotSynopsis,
+                    moviePosterUrl, 1, new Date(), new Date());
+            Toast.makeText(DetailsActivity.this, "This movie is starred successfully", Toast.LENGTH_LONG).show();
         });
 
-        reviewContent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, MovieReviewActivity.class);
-                intent.putExtra("movieId", movieId);
-                startActivity(intent);
-            }
+        reviewContent.setOnClickListener(v -> {
+            Intent intent = new Intent(mContext, MovieReviewActivity.class);
+            intent.putExtra("movieId", movieId);
+            startActivity(intent);
         });
 
-        recyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openWebPage(url);
-            }
-        });
+        recyclerView.setOnClickListener(v -> openWebPage(url));
     }
 
     private void openWebPage(String url) {
@@ -147,12 +130,7 @@ public class DetailsActivity extends AppCompatActivity implements
 
         final MoviesResult moviesResult = new MoviesResult(movieId, release_date, movieRating, posterPath, originalTitle,
                 plotSynopsis, moviePosterUrl, starred, createdAt, updatedAt);
-        AppExecutor.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                mDatabase.movieDao().saveMovie(moviesResult);
-            }
-        });
+        AppExecutor.getInstance().diskIO().execute(() -> mDatabase.movieDao().saveMovie(moviesResult));
     }
 
     @Override
@@ -211,7 +189,6 @@ public class DetailsActivity extends AppCompatActivity implements
             moviePosterUrl = moviesResult.getMoviePosterUrl();
             movieReleaseDate.setText(releaseDate);
             moviePlotSynopsis.setText(plotSynopsis);
-            movieTitle.setText(originalTitle);
             movieOriginalTitle.setText(originalTitle);
             rating = moviesResult.getRating();
             ratingValue = Double.toString(rating);
