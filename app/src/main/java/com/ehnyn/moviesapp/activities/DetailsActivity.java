@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,11 +29,9 @@ import com.ehnyn.moviesapp.networking.MovieDataInterface;
 import com.ehnyn.moviesapp.networking.RetrofitClient;
 import com.ehnyn.moviesapp.utils.APPConstant;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -58,8 +55,6 @@ public class DetailsActivity extends AppCompatActivity implements
     TextView movieReleaseDate;
     @BindView(R.id.originalTitle)
     TextView movieOriginalTitle;
-    @BindView(R.id.movieThumbnail)
-    TextView movieTitle;
     @BindView(R.id.rating)
     TextView movieRating;
     @BindView(R.id.plotSynopsis)
@@ -107,13 +102,10 @@ public class DetailsActivity extends AppCompatActivity implements
         showLoadingView();
 
         mDatabase = AppDatabase.getInstance(getApplicationContext());
-        starredMovieImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveStarredMovie(movieId, releaseDate, rating, moviePosterUrl, originalTitle, plotSynopsis,
-                        moviePosterUrl, 1, new Date(), new Date());
-                Toast.makeText(DetailsActivity.this, "This movie is starred successfully", Toast.LENGTH_LONG).show();
-            }
+        starredMovieImageView.setOnClickListener(v -> {
+            saveStarredMovie(movieId, releaseDate, rating, moviePosterUrl, originalTitle, plotSynopsis,
+                    moviePosterUrl, 1, new Date(), new Date());
+            Toast.makeText(DetailsActivity.this, "This movie is starred successfully", Toast.LENGTH_LONG).show();
         });
 
         reviewContent.setOnClickListener(v -> {
@@ -197,7 +189,6 @@ public class DetailsActivity extends AppCompatActivity implements
             moviePosterUrl = moviesResult.getMoviePosterUrl();
             movieReleaseDate.setText(releaseDate);
             moviePlotSynopsis.setText(plotSynopsis);
-            movieTitle.setText(originalTitle);
             movieOriginalTitle.setText(originalTitle);
             rating = moviesResult.getRating();
             ratingValue = Double.toString(rating);

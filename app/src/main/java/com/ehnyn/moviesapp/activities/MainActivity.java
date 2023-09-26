@@ -1,16 +1,15 @@
 package com.ehnyn.moviesapp.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +17,6 @@ import com.ehnyn.moviesapp.R;
 import com.ehnyn.moviesapp.adapters.MoviesAdapter;
 import com.ehnyn.moviesapp.fragments.AppErrorViewFragment;
 import com.ehnyn.moviesapp.fragments.AppLoadingViewFragment;
-import com.ehnyn.moviesapp.models.Database.AppDatabase;
 import com.ehnyn.moviesapp.models.MainViewModel;
 import com.ehnyn.moviesapp.models.MoviesResult;
 import com.ehnyn.moviesapp.models.OnItemClickedListener;
@@ -44,8 +42,8 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
     Context mContext;
     APIService apiService;
     RetrofitClient retrofitClient;
-    private AppDatabase appDatabase;
-    @BindView(R.id.grid_recycler_view)
+
+    @BindView(value = R.id.grid_recycler_view)
     RecyclerView recyclerView;
 
     @Override
@@ -57,11 +55,10 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
         appUtility = new APPUtility();
         mContext = MainActivity.this;
         moviesResultList = new ArrayList<>();
-        appDatabase = AppDatabase.getInstance(getApplicationContext());
 
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(false);
         }
         setTitle(R.string.app_name);
 
@@ -119,12 +116,7 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
         } else if(itemSelected == R.id.starred_movies){
             setTitle(R.string.starred);
             MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-            viewModel.getMoviesResult().observe(this, new Observer<List<MoviesResult>>() {
-                @Override
-                public void onChanged(@Nullable List<MoviesResult> moviesResults) {
-                    setStarredMovies(moviesResults);
-                }
-            });
+            viewModel.getMoviesResult().observe(this, moviesResults -> setStarredMovies(moviesResults));
         }
 
         return super.onOptionsItemSelected(item);
@@ -142,9 +134,7 @@ public class MainActivity extends AppCompatActivity implements MovieDataInterfac
         moviesAdapter = new MoviesAdapter(moviesResult, this);
         this.moviesResultList.addAll(moviesResult);
         moviesAdapter.notifyDataSetChanged();
-        if(moviesAdapter != null){
-            recyclerView.setAdapter(moviesAdapter);
-        }
+        recyclerView.setAdapter(moviesAdapter);
     }
 
     @Override
