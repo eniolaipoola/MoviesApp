@@ -1,9 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+appiy plugin: 'com.google.firebase.crashlytics'
+
 
 android {
     compileSdk 33
     defaultConfig {
-        applicationId "com.example.moviesapp"
+        applicationId "com.ehnyn.moviesapp"
         minSdkVersion 29
         targetSdkVersion 33
         versionCode 1
@@ -49,6 +52,11 @@ dependencies {
     //###################### ButterKnife #########################
     implementation "com.jakewharton:butterknife:10.2.0"
     annotationProcessor "com.jakewharton:butterknife-compiler:10.2.0"
+
+    //Firebase
+    implementation platform('com.google.firebase:firebase-bom:32.3.1')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation("com.google.firebase:firebase-crashlytics")
 
     //###################################### Networking #######################################//
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
