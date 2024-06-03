@@ -21,5 +21,8 @@
     <string name="movie_review_url">Movie Review Url</string>
 
     <string name="view_review">View Review</string>
+    <string name="youtube_url">https://www.youtube.com/</string>
+    <string name="movie_starred_text">This movie is starred successfully</string>
+    <string name="movie">MOVIE</string>
 
 </resources>

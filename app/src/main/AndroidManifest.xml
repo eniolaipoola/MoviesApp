@@ -12,9 +12,9 @@
         android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme">
-        <activity android:name="com.ehnyn.moviesapp.activities.MovieReviewActivity"/>
-        <activity android:name="com.ehnyn.moviesapp.activities.DetailsActivity" />
-        <activity android:name="com.ehnyn.moviesapp.activities.MainActivity"
+        <activity android:name="com.tei.moviesapp.ui.activities.MovieReviewActivity"/>
+        <activity android:name="com.tei.moviesapp.ui.activities.DetailsActivity" />
+        <activity android:name="com.tei.moviesapp.ui.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

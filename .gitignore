@@ -63,7 +63,6 @@ fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
-*.iml
 /local.properties
 /.idea/caches
 /.idea/libraries
@@ -74,4 +73,5 @@ fastlane/readme.md
 .DS_Store
 /build
 /captures
-.externalNativeBuild
+.idea*
+gradle/*
