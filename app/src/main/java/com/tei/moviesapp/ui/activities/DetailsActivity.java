@@ -87,7 +87,7 @@ public class DetailsActivity extends AppCompatActivity implements
         apiService = retrofitClient.getRetrofit(APPConstant.API_BASE_URL).create(APIService.class);
         movieData = new MovieData(apiService);
         movieTrailerList = new ArrayList<>();
-        final String url = "https://www.youtube.com/";
+        final String url = getString(R.string.youtube_url);
 
 
         recyclerView = findViewById(R.id.movieTrailerRecyclerView);
@@ -105,7 +105,7 @@ public class DetailsActivity extends AppCompatActivity implements
         starredMovieImageView.setOnClickListener(v -> {
             saveStarredMovie(movieId, releaseDate, rating, moviePosterUrl, originalTitle, plotSynopsis,
                     moviePosterUrl, 1, new Date(), new Date());
-            Toast.makeText(DetailsActivity.this, "This movie is starred successfully", Toast.LENGTH_LONG).show();
+            Toast.makeText(DetailsActivity.this, R.string.movie_starred_text, Toast.LENGTH_LONG).show();
         });
 
         reviewContent.setOnClickListener(v -> {
@@ -180,7 +180,7 @@ public class DetailsActivity extends AppCompatActivity implements
     private void getMovieInformation() {
         Intent intent = getIntent();
         if (intent != null) {
-            MoviesResult moviesResult = (MoviesResult) intent.getSerializableExtra("MOVIE");
+            MoviesResult moviesResult = (MoviesResult) intent.getSerializableExtra(getString(R.string.movie));
 
             releaseDate = moviesResult.getReleaseDate();
             plotSynopsis = moviesResult.getPlotSynopsis();

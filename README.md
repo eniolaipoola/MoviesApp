@@ -24,19 +24,10 @@ To ensure proper functioning of this app, generate the API key and place it in t
 API_PRIVATE_KEY variable.
 
 
-### Images
-1. Version 1.0
-- Tablet View
-
+### Screenshots
 <p align="center">
-    <img src="/screenshots/screenshot_home_tab.png" alt=""/>
-    <img src="/screenshots/screenshot_tab.png" alt=""/>
+    <img src="/screenshots/app_screenshots.png" alt=""/>
 </p>
-
-2. Version 1.1
-- Mobile View
-![HomePage](https://github.com/eniolaipoola/MoviesApp/assets/19291341/be3637a1-a9e7-4656-b078-eb55f0d1e1d0)
-![Details Page](https://github.com/eniolaipoola/MoviesApp/assets/19291341/60f7d1d0-3252-42c5-b02e-067ddfba86d3)
 
 
 
