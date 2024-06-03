@@ -27,9 +27,11 @@ API_PRIVATE_KEY variable.
 ### Images
 1. Version 1.0
 - Tablet View
-![](https://user-images.githubusercontent.com/19291341/64474136-4ec75100-d168-11e9-862d-75676f678453.jpg)
 
-![moviesapp](https://user-images.githubusercontent.com/19291341/65424072-87228c80-de02-11e9-91f4-2002b1210e06.png)
+<p align="center">
+    <img src="/screenshots/screenshot_home_tab.png" alt=""/>
+    <img src="/screenshots/screenshot_tab.png" alt=""/>
+</p>
 
 2. Version 1.1
 - Mobile View
