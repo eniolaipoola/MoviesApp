@@ -2,7 +2,11 @@ package com.tei.moviesapp.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -34,6 +38,8 @@ public class MovieReviewActivity extends AppCompatActivity implements MovieDataI
     FragmentTransaction fragmentTransaction;
     @BindView(R.id.movieReviewRecyclerView)
     RecyclerView recyclerView;
+    @BindView(R.id.no_review_error)
+    TextView movieReviewEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +65,7 @@ public class MovieReviewActivity extends AppCompatActivity implements MovieDataI
             movieData.fetchMovieReview(this, movieId);
             showLoadingView();
         } else {
-            showErrorView("Movie id not found");
+            showErrorView(getString(R.string.movie_id_error));
         }
 
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -82,11 +88,15 @@ public class MovieReviewActivity extends AppCompatActivity implements MovieDataI
     public void onMovieReviewSuccessful(List<MovieReviewModel.MovieReviewResult> movieReviewResult) {
         hideFragmentView(AppLoadingViewFragment.class.getName());
         movieReviewAdapter = new MovieReviewAdapter(movieReviewResult);
-        if(movieReviewResult.size() == 0){}
-        movieReviewAdapter.notifyDataSetChanged();
-        this.movieReviewResults.addAll(movieReviewResult);
-        recyclerView.setAdapter(movieReviewAdapter);
-
+        if(movieReviewResult.size() == 0){
+            movieReviewEmpty.setVisibility(View.VISIBLE);
+            movieReviewEmpty.setText(R.string.no_review_error_text);
+            showErrorView(getString(R.string.no_review_error_text));
+        } else {
+            movieReviewAdapter.notifyDataSetChanged();
+            this.movieReviewResults.addAll(movieReviewResult);
+            recyclerView.setAdapter(movieReviewAdapter);
+        }
     }
 
     @Override

@@ -24,5 +24,7 @@
     <string name="youtube_url">https://www.youtube.com/</string>
     <string name="movie_starred_text">This movie is starred successfully</string>
     <string name="movie">MOVIE</string>
+    <string name="no_review_error_text">There is no review available for this movie</string>
+    <string name="movie_id_error">Movie id not found</string>
 
 </resources>
